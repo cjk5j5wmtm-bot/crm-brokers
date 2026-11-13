@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="shell">
         <aside className="side">
           <div className="side-top">
-            <a className="brand" href="/"><Logo size={26} /> <Wordmark /></a>
+            <a className="brand" href="/"><Logo size={34} /> <Wordmark /></a>
             <Profile />
           </div>
           <Nav direccion={dir} />
