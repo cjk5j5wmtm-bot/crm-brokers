@@ -416,3 +416,17 @@ td a:hover { text-decoration: underline; }
 @media (max-width: 640px) { .chart { gap: 4px; height: 150px; } .chart.months .l { font-size: 9px; } }
 .tabbar.n5 { grid-template-columns: repeat(5, 1fr); }
 @media (max-width: 900px) { .kpi.goal .bar { grid-column: 1 / -1; } .kpi.goal > small { display: block; grid-column: 1 / -1; } }
+
+/* Elegir apartado del cliente */
+.tipo-pick { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+.tipo-pick legend { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 8px; padding: 0; }
+.tipo-opts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.tipo-opt { position: relative; display: grid; gap: 2px; padding: 12px 14px; border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: rgba(130, 220, 180, 0.04); cursor: pointer; }
+.tipo-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.tipo-opt b { font-size: 14px; font-weight: 600; color: var(--ink); }
+.tipo-opt span { font-size: 12px; color: var(--muted); }
+.tipo-opt:hover { border-color: var(--accent); }
+.tipo-opt.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.tipo-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip.inq { background: rgba(196, 181, 253, 0.14); color: #C4B5FD; }
+@media (max-width: 640px) { .tipo-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

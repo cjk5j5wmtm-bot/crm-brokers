@@ -11,6 +11,7 @@ describe("plazos de llamada", () => {
     expect(proximaSugerida("consulta", "2026-11-13")).toBe("2026-11-15");
     expect(proximaSugerida("propietario", "2026-11-13")).toBe("2026-12-13");
     expect(proximaSugerida("vendido", "2026-11-13")).toBe("2027-01-12");
+    expect(proximaSugerida("inquilino", "2026-11-13")).toBe("2026-12-13");
   });
   it("cruza fin de mes y de año", () => expect(sumarDias("2026-12-31", 1)).toBe("2027-01-01"));
 });
@@ -35,7 +36,7 @@ describe("agenda", () => {
       clientes: [cli({ tipo: "consulta", proximaFecha: "2026-11-01" }), cli({ tipo: "propietario", proximaFecha: "2026-12-01" })],
       seguimientos: [{ id: "s", cliente: "c", fecha: "2026-11-10", canal: "Llamada", resultado: "", texto: "x", creado: "" }, { id: "t", cliente: "c", fecha: "2026-09-01", canal: "Llamada", resultado: "", texto: "x", creado: "" }],
     }, hoy);
-    expect(r).toEqual({ consultas: 1, propietarios: 1, vendidos: 0, llamadas30: 1, vencidos: 1, ultimoContacto: "2026-11-10" });
+    expect(r).toEqual({ consultas: 1, propietarios: 1, inquilinos: 0, vendidos: 0, llamadas30: 1, vencidos: 1, ultimoContacto: "2026-11-10" });
   });
 });
 

@@ -20,7 +20,7 @@ export default async function Detalle({ params, searchParams }: { params: Promis
   const datos: [string, string][] = ([
     ["Teléfono", x.tel], ["Mail", x.email], ["Llegó por", x.origen], ["Etapa", x.tipo === "consulta" ? x.etapa : ""],
     ["Zona", x.zona], ["Busca / tipo", x.tipoProp], ["Presupuesto", fmtUSD(x.presupuesto)], ["Pago", x.pago],
-    [x.tipo === "vendido" ? "Compró" : "Propiedad", x.direccion], ["Precio publicado", fmtUSD(x.precio)], ["Fecha de compra", fmtFecha(x.fechaOp)],
+    [x.tipo === "vendido" ? "Compró" : x.tipo === "inquilino" ? "Alquila en" : "Propiedad", x.direccion], ["Precio publicado", fmtUSD(x.precio)], ["Fecha de compra", fmtFecha(x.fechaOp)], ["Le vence el contrato", fmtFecha(x.finContrato ?? "")],
     ["Alta", fmtFecha(x.alta)],
   ] as [string, string][]).filter(([, v]) => v);
   return (

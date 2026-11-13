@@ -8,7 +8,7 @@ export const Logo = ({ size = 28 }: { size?: number }) => <img src="/marca/arbol
 export const Wordmark = () => <span className="wordmark">Seguimiento MSZ</span>;
 
 export const TipoChip = ({ c }: { c: Pick<Cliente, "tipo"> }) => (
-  <span className={`chip ${c.tipo === "consulta" ? "info" : c.tipo === "vendido" ? "ok" : ""}`}>{TIPOS[c.tipo].nombre}</span>
+  <span className={`chip ${c.tipo === "consulta" ? "info" : c.tipo === "vendido" ? "ok" : c.tipo === "inquilino" ? "inq" : ""}`}>{TIPOS[c.tipo].nombre}</span>
 );
 
 /** Estado del próximo llamado, siempre con texto (no solo color). */

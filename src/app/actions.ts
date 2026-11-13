@@ -33,6 +33,8 @@ function leerCliente(f: FormData, base: Partial<Cliente>): Omit<Cliente, "id" | 
   if (proxima && !esFecha(proxima)) return "La fecha del próximo llamado no es válida.";
   const fechaOp = str(f, "fechaOp");
   if (fechaOp && !esFecha(fechaOp)) return "La fecha de compra no es válida.";
+  const finContrato = str(f, "finContrato");
+  if (finContrato && !esFecha(finContrato)) return "La fecha de vencimiento del contrato no es válida.";
   return {
     tipo,
     nombre,
@@ -47,6 +49,7 @@ function leerCliente(f: FormData, base: Partial<Cliente>): Omit<Cliente, "id" | 
     direccion: str(f, "direccion", 200),
     precio: leerMonto(str(f, "precio")),
     fechaOp,
+    finContrato,
     proximoPaso: str(f, "proximoPaso", 200),
     proximaFecha: proxima || base.proximaFecha || proximaSugerida(tipo, hoyAR()),
     ultimoContacto: base.ultimoContacto ?? "",

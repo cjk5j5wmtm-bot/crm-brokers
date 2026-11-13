@@ -26,7 +26,7 @@ export default async function Hoy() {
 
       <div className="kpis">
         <div className={`kpi ${llamar.length ? "alert" : ""}`}><span>Para llamar hoy</span><b className="num">{llamar.length}</b><small>Atrasadas y de hoy</small></div>
-        <div className="kpi"><span>Mis clientes</span><b className="num">{c.clientes.length}</b><small>{cuenta(c.clientes.filter((x) => x.tipo === "consulta").length, "consulta", "consultas")} · {cuenta(c.clientes.filter((x) => x.tipo === "propietario").length, "propietario", "propietarios")}</small></div>
+        <div className="kpi"><span>Mis clientes</span><b className="num">{c.clientes.length}</b><small>{cuenta(c.clientes.filter((x) => x.tipo === "consulta").length, "consulta", "consultas")} · {cuenta(c.clientes.filter((x) => x.tipo === "propietario").length, "propietario", "propietarios")} · {cuenta(c.clientes.filter((x) => x.tipo === "inquilino").length, "inquilino", "inquilinos")}</small></div>
         <div className="kpi"><span>Llamadas en 7 días</span><b className="num">{semana}</b><small>Las que anotaste</small></div>
       </div>
 

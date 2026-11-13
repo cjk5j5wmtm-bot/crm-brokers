@@ -4,9 +4,10 @@ CRM de la inmobiliaria: cada asesor carga sus clientes y anota sus llamadas, y l
 
 ## Qué hace
 - **Llamadas de hoy:** cada asesor ve a quién tiene que llamar (las atrasadas primero), con botones para llamar, abrir WhatsApp y anotar la llamada.
-- **Tres tipos de cliente, cada uno con su plazo de llamada:**
+- **Cuatro apartados de cliente, cada uno con su plazo de llamada:**
   - Consulta (comprador o interesado): a los 2 días.
   - Propietario: una vez por mes.
+  - Inquilino: una vez por mes (puede comprar o mudarse cuando le vence el contrato).
   - Ya compró: cada 2 meses, para pedir referidos.
 - **Ficha del cliente:** datos, historial de llamadas y próximo paso. Al anotar una llamada, el próximo llamado se agenda solo.
 - **Dirección:** resumen por asesor y por oficina (clientes, llamadas de 30 días, atrasadas y último contacto). Desde ahí puede dar de baja a un asesor, darle el rol de dirección o una contraseña temporal.

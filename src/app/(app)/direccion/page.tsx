@@ -15,7 +15,7 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
   const of = sp.oficina && oficinas.includes(sp.oficina) ? sp.oficina : "";
   const vis = filas.filter((f) => !of || f.u.oficina === of).sort((a, b) => b.r.vencidos - a.r.vencidos || a.u.nombre.localeCompare(b.u.nombre));
   const act = vis.filter((f) => f.u.activo);
-  const tot = (k: "consultas" | "propietarios" | "vendidos" | "llamadas30" | "vencidos") => act.reduce((s, f) => s + f.r[k], 0);
+  const tot = (k: "consultas" | "propietarios" | "inquilinos" | "vendidos" | "llamadas30" | "vencidos") => act.reduce((s, f) => s + f.r[k], 0);
   const sinLlamar = act.filter((f) => !f.r.ultimoContacto || diasEntre(f.r.ultimoContacto, hoy) > 7).length;
   return (
     <>
@@ -29,7 +29,7 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
         </div>
       )}
       <div className="kpis four">
-        <div className="kpi"><span>Clientes</span><b className="num">{tot("consultas") + tot("propietarios") + tot("vendidos")}</b><small>Consultas {tot("consultas")} · Propietarios {tot("propietarios")} · Compraron {tot("vendidos")}</small></div>
+        <div className="kpi"><span>Clientes</span><b className="num">{tot("consultas") + tot("propietarios") + tot("inquilinos") + tot("vendidos")}</b><small>Consultas {tot("consultas")} · Propietarios {tot("propietarios")} · Inquilinos {tot("inquilinos")} · Compraron {tot("vendidos")}</small></div>
         <div className="kpi"><span>Llamadas en 30 días</span><b className="num">{tot("llamadas30")}</b><small>Anotadas por los asesores</small></div>
         <div className={`kpi ${tot("vencidos") ? "alert" : ""}`}><span>Llamadas atrasadas</span><b className="num">{tot("vencidos")}</b><small>Clientes con el llamado vencido</small></div>
         <div className={`kpi ${sinLlamar ? "alert" : ""}`}><span>Sin actividad en 7 días</span><b className="num">{sinLlamar}</b><small>Asesores que no anotaron llamadas</small></div>
@@ -39,7 +39,7 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
         {vis.length ? (
           <div className="tbl">
             <table className="cards">
-              <thead><tr><th>Asesor</th><th>Oficina</th><th className="r">Consultas</th><th className="r">Propietarios</th><th className="r">Compraron</th><th className="r">Ventas del año</th><th className="r">Llamadas 30 d</th><th className="r">Atrasadas</th><th>Último contacto</th><th className="r">Cuenta</th></tr></thead>
+              <thead><tr><th>Asesor</th><th>Oficina</th><th className="r">Consultas</th><th className="r">Propietarios</th><th className="r">Inquilinos</th><th className="r">Compraron</th><th className="r">Ventas del año</th><th className="r">Llamadas 30 d</th><th className="r">Atrasadas</th><th>Último contacto</th><th className="r">Cuenta</th></tr></thead>
               <tbody>
                 {vis.map(({ u, r, ventas }) => (
                   <tr key={u.id}>
@@ -47,6 +47,7 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
                     <td className="small">{u.oficina}</td>
                     <td className="r num">{r.consultas}</td>
                     <td className="r num">{r.propietarios}</td>
+                    <td className="r num">{r.inquilinos}</td>
                     <td className="r num">{r.vendidos}</td>
                     <td className="r num">{ventas}</td>
                     <td className="r num">{r.llamadas30}</td>

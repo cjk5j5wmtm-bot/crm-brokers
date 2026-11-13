@@ -1,74 +1,14 @@
-import { CANALES, ETAPAS, ORIGENES, PAGOS, RESULTADOS, TIPOS, TIPO_KEYS, TIPOS_PROP, ZONAS, hoyAR, type Cliente, type TipoCliente } from "@/lib/domain/crm";
+import { CANALES, RESULTADOS, TIPOS, hoyAR, type Cliente, type TipoCliente } from "@/lib/domain/crm";
 import { ActionForm } from "@/app/ui";
+import { ClienteCampos, Txt } from "./cliente-campos";
 import { crearClienteAction, editarClienteAction, registrarLlamadaAction } from "@/app/actions";
 
-const Sel = ({ name, label, opts, value, empty = "Elegí" }: { name: string; label: string; opts: string[]; value?: string; empty?: string }) => (
-  <label className="field">{label}
-    <select name={name} defaultValue={value ?? ""}>
-      <option value="">{empty}</option>
-      {value && !opts.includes(value) && <option>{value}</option>}
-      {opts.map((o) => <option key={o}>{o}</option>)}
-    </select>
-  </label>
-);
-const Txt = ({ name, label, value, type = "text", ...rest }: { name: string; label: string; value?: string | number | null; type?: string } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value">) => (
-  <label className="field">{label}<input name={name} type={type} defaultValue={value ?? ""} {...rest} /></label>
-);
-
-/** Formulario de cliente: los campos cambian según el tipo. Sirve para crear y para editar. */
+/** Formulario de cliente. Sirve para crear y para editar; los campos cambian según el apartado elegido. */
 export function ClienteForm({ c, tipo }: { c?: Cliente; tipo: TipoCliente }) {
-  const t = c?.tipo ?? tipo;
   return (
     <ActionForm action={c ? editarClienteAction : crearClienteAction} submit={c ? "Guardar cambios" : "Guardar cliente"} className="stack client-form">
       {c && <input type="hidden" name="id" value={c.id} />}
-      {c ? (
-        <label className="field">Tipo de cliente
-          <select name="tipo" defaultValue={t}>{TIPO_KEYS.map((k) => <option key={k} value={k}>{TIPOS[k].nombre}</option>)}</select>
-        </label>
-      ) : <input type="hidden" name="tipo" value={t} />}
-      <div className="row">
-        <Txt name="nombre" label="Nombre y apellido" value={c?.nombre} required autoComplete="off" />
-        <Txt name="tel" label="Teléfono / WhatsApp" value={c?.tel} type="tel" inputMode="tel" />
-      </div>
-      <div className="row">
-        <Txt name="email" label="Mail (opcional)" value={c?.email} type="email" />
-        <Sel name="origen" label="¿Cómo llegó?" opts={ORIGENES} value={c?.origen} />
-      </div>
-      {t === "consulta" && (
-        <>
-          <div className="row">
-            <Sel name="zona" label="Zona que busca" opts={ZONAS} value={c?.zona} />
-            <Sel name="tipoProp" label="Qué busca" opts={TIPOS_PROP} value={c?.tipoProp} />
-          </div>
-          <div className="row">
-            <Txt name="presupuesto" label="Presupuesto (USD)" value={c?.presupuesto} inputMode="numeric" placeholder="Ej: 150000" />
-            <Sel name="pago" label="Forma de pago" opts={PAGOS} value={c?.pago} />
-          </div>
-          <Sel name="etapa" label="Etapa" opts={ETAPAS} value={c?.etapa ?? "Nuevo"} empty="Nuevo" />
-        </>
-      )}
-      {t === "propietario" && (
-        <>
-          <Txt name="direccion" label="Dirección de su propiedad" value={c?.direccion} />
-          <div className="row">
-            <Sel name="tipoProp" label="Tipo de propiedad" opts={TIPOS_PROP} value={c?.tipoProp} />
-            <Sel name="zona" label="Zona" opts={ZONAS} value={c?.zona} />
-            <Txt name="precio" label="Precio publicado (USD)" value={c?.precio} inputMode="numeric" />
-          </div>
-        </>
-      )}
-      {t === "vendido" && (
-        <div className="row">
-          <Txt name="direccion" label="Propiedad que compró" value={c?.direccion} />
-          <Txt name="fechaOp" label="Fecha de compra" value={c?.fechaOp} type="date" />
-          <Txt name="precio" label="Precio de venta (USD)" value={c?.precio} inputMode="numeric" />
-        </div>
-      )}
-      <div className="row">
-        <Txt name="proximaFecha" label={`Próximo llamado (si lo dejás vacío: en ${TIPOS[t].dias} días)`} value={c?.proximaFecha} type="date" />
-        <Txt name="proximoPaso" label="Próximo paso" value={c?.proximoPaso} placeholder="Ej: mandarle 3 casas en Castelar" />
-      </div>
-      <label className="field">Notas<textarea name="notas" rows={3} defaultValue={c?.notas ?? ""} /></label>
+      <ClienteCampos c={c} tipo={c?.tipo ?? tipo} />
     </ActionForm>
   );
 }

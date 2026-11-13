@@ -1,10 +1,11 @@
 /** Núcleo del CRM: tipos, listas y cálculos puros (sin base de datos), para poder probarlos. */
 
-export type TipoCliente = "consulta" | "propietario" | "vendido";
+export type TipoCliente = "consulta" | "propietario" | "inquilino" | "vendido";
 
 export const TIPOS: Record<TipoCliente, { nombre: string; plural: string; dias: number; desc: string }> = {
   consulta: { nombre: "Consulta", plural: "Consultas", dias: 2, desc: "Comprador o interesado. Llamada a los 2 días." },
   propietario: { nombre: "Propietario", plural: "Propietarios", dias: 30, desc: "Dueño de una propiedad captada. Llamada una vez por mes." },
+  inquilino: { nombre: "Inquilino", plural: "Inquilinos", dias: 30, desc: "Alquila hoy. Llamada una vez por mes: puede comprar o mudarse cuando le vence el contrato." },
   vendido: { nombre: "Ya compró", plural: "Ya compraron", dias: 60, desc: "Cliente que ya compró. Llamada cada 2 meses para pedir referidos." },
 };
 export const TIPO_KEYS = Object.keys(TIPOS) as TipoCliente[];
@@ -33,6 +34,7 @@ export interface Cliente {
   direccion: string; // propiedad del propietario o la que compró
   precio: number | null; // USD
   fechaOp: string; // fecha en que compró
+  finContrato?: string; // inquilinos: cuándo le vence el alquiler
   proximoPaso: string;
   proximaFecha: string; // AAAA-MM-DD
   ultimoContacto: string;
@@ -122,6 +124,7 @@ export function proximosDias(clientes: Cliente[], hoy: string, dias = 7) {
 export interface Resumen {
   consultas: number;
   propietarios: number;
+  inquilinos: number;
   vendidos: number;
   llamadas30: number;
   vencidos: number;
@@ -134,6 +137,7 @@ export function resumen(c: Cartera, hoy: string): Resumen {
   return {
     consultas: c.clientes.filter((x) => x.tipo === "consulta").length,
     propietarios: c.clientes.filter((x) => x.tipo === "propietario").length,
+    inquilinos: c.clientes.filter((x) => x.tipo === "inquilino").length,
     vendidos: c.clientes.filter((x) => x.tipo === "vendido").length,
     llamadas30: c.seguimientos.filter((s) => s.fecha >= desde && s.fecha <= hoy).length,
     vencidos: c.clientes.filter((x) => x.etapa !== "Perdido" && estadoLlamada(x, hoy) === "vencido").length,
