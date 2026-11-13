@@ -28,7 +28,6 @@ export function ClienteCampos({ c, tipo }: { c?: Cliente; tipo: TipoCliente }) {
             <label key={k} className={`tipo-opt ${t === k ? "on" : ""}`}>
               <input type="radio" name="tipo" value={k} checked={t === k} onChange={() => setT(k)} />
               <b>{TIPOS[k].nombre}</b>
-              <span>Llamar cada {TIPOS[k].dias} días</span>
             </label>
           ))}
         </div>
@@ -82,7 +81,7 @@ export function ClienteCampos({ c, tipo }: { c?: Cliente; tipo: TipoCliente }) {
         </div>
       )}
       <div className="row">
-        <Txt name="proximaFecha" label={`Próximo llamado (si lo dejás vacío: en ${TIPOS[t].dias} días)`} value={c?.proximaFecha} type="date" />
+        <Txt name="proximaFecha" label="Próximo llamado (opcional)" value={c?.proximaFecha} type="date" />
         <Txt name="proximoPaso" label="Próximo paso" value={c?.proximoPaso} placeholder="Ej: mandarle 3 casas en Castelar" />
       </div>
       <label className="field">Notas<textarea name="notas" rows={3} defaultValue={c?.notas ?? ""} /></label>

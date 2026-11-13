@@ -126,7 +126,7 @@ export async function marcarComproAction(_: ActionResult | null, f: FormData): P
   cli.proximoPaso = "Llamar y pedir referidos";
   await saveCartera(user.id, c);
   revalidatePath(`/clientes/${cli.id}`);
-  return ok(`Ahora está en "${TIPOS.vendido.plural}". Te aviso en 2 meses para pedirle referidos.`);
+  return ok(`Venta registrada. Ahora está en "${TIPOS.vendido.plural}".`);
 }
 
 export async function borrarClienteAction(_: ActionResult | null, f: FormData): Promise<ActionResult> {

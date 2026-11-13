@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { hoyAR, paraLlamar, proximosDias, sumarDias, fmtFecha, TIPOS } from "@/lib/domain/crm";
+import { hoyAR, paraLlamar, proximosDias, sumarDias, fmtFecha } from "@/lib/domain/crm";
 import { loadCartera, requireUser } from "@/lib/server/store";
 import { ClienteLink, Contacto, LlamadaChip, TipoChip } from "@/lib/view";
 import { LlamadaForm } from "@/components/forms";
@@ -71,7 +71,6 @@ export default async function Hoy() {
           </ul>
         ) : <p className="empty">Nada agendado para esta semana.</p>}
       </section>
-      <p className="small muted">Plazos de llamada: {Object.values(TIPOS).map((t) => `${t.nombre}, cada ${t.dias} días`).join(" · ")}.</p>
     </div>
   );
 }

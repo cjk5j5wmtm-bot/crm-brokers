@@ -30,7 +30,7 @@ export function LlamadaForm({ c, compacto = false }: { c: Cliente; compacto?: bo
         {!compacto && <Txt name="fecha" label="Fecha" type="date" value={hoyAR()} max={hoyAR()} />}
       </div>
       <label className="field">¿Qué hablaron?<input name="texto" placeholder="Ej: quiere ver la casa de Leloir el sábado" autoComplete="off" /></label>
-      <label className="field">Próximo llamado (vacío = en {TIPOS[c.tipo].dias} días)<input name="proximaFecha" type="date" /></label>
+      <label className="field">Próximo llamado (opcional)<input name="proximaFecha" type="date" /></label>
     </ActionForm>
   );
 }
