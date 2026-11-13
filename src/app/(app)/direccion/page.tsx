@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fmtFecha, hoyAR, resumen, diasEntre } from "@/lib/domain/crm";
+import { fmtFecha, hoyAR, resumen, diasEntre, estadisticas } from "@/lib/domain/crm";
 import { listUsers } from "@/lib/server/auth";
 import { loadCartera, requireDireccion } from "@/lib/server/store";
 import { ActionForm } from "@/app/ui";
@@ -10,7 +10,7 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const hoy = hoyAR();
   const users = await listUsers();
-  const filas = await Promise.all(users.map(async (u) => ({ u, r: resumen(await loadCartera(u.id), hoy) })));
+  const filas = await Promise.all(users.map(async (u) => { const c = await loadCartera(u.id); return { u, r: resumen(c, hoy), ventas: estadisticas(c, hoy).ventasAnio }; }));
   const oficinas = [...new Set(users.map((u) => u.oficina))].sort();
   const of = sp.oficina && oficinas.includes(sp.oficina) ? sp.oficina : "";
   const vis = filas.filter((f) => !of || f.u.oficina === of).sort((a, b) => b.r.vencidos - a.r.vencidos || a.u.nombre.localeCompare(b.u.nombre));
@@ -39,15 +39,16 @@ export default async function Direccion({ searchParams }: { searchParams: Promis
         {vis.length ? (
           <div className="tbl">
             <table className="cards">
-              <thead><tr><th>Asesor</th><th>Oficina</th><th className="r">Consultas</th><th className="r">Propietarios</th><th className="r">Compraron</th><th className="r">Llamadas 30 d</th><th className="r">Atrasadas</th><th>Último contacto</th><th className="r">Cuenta</th></tr></thead>
+              <thead><tr><th>Asesor</th><th>Oficina</th><th className="r">Consultas</th><th className="r">Propietarios</th><th className="r">Compraron</th><th className="r">Ventas del año</th><th className="r">Llamadas 30 d</th><th className="r">Atrasadas</th><th>Último contacto</th><th className="r">Cuenta</th></tr></thead>
               <tbody>
-                {vis.map(({ u, r }) => (
+                {vis.map(({ u, r, ventas }) => (
                   <tr key={u.id}>
                     <td><Link href={`/direccion/${u.id}`}><b>{u.nombre}</b></Link>{u.rol === "direccion" && <span className="chip info" style={{ marginLeft: 6 }}>Dirección</span>}{!u.activo && <span className="chip" style={{ marginLeft: 6 }}>Baja</span>}</td>
                     <td className="small">{u.oficina}</td>
                     <td className="r num">{r.consultas}</td>
                     <td className="r num">{r.propietarios}</td>
                     <td className="r num">{r.vendidos}</td>
+                    <td className="r num">{ventas}</td>
                     <td className="r num">{r.llamadas30}</td>
                     <td className="r">{r.vencidos ? <span className="chip bad">{r.vencidos}</span> : <span className="num">0</span>}</td>
                     <td className="small muted">{r.ultimoContacto ? `${fmtFecha(r.ultimoContacto)} (hace ${diasEntre(r.ultimoContacto, hoy)} d)` : "Nunca"}</td>

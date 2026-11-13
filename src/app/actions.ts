@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   CANALES, ETAPAS, RESULTADOS, TIPOS, esFecha, esTipo, hoyAR, leerMonto, proximaSugerida,
-  type Cliente, type Seguimiento,
+  type Cliente, type Objetivos, type Seguimiento,
 } from "@/lib/domain/crm";
 import { checkPassword, findUserById, hashPassword, saveUser } from "@/lib/server/auth";
 import { loadCartera, requireDireccion, requireUser, saveCartera } from "@/lib/server/store";
@@ -114,7 +114,11 @@ export async function marcarComproAction(_: ActionResult | null, f: FormData): P
   const hoy = hoyAR();
   cli.tipo = "vendido";
   cli.etapa = "Cerrado";
-  cli.fechaOp = cli.fechaOp || hoy;
+  const fecha = str(f, "fechaOp");
+  if (fecha && (!esFecha(fecha) || fecha > hoy)) return err("La fecha de la venta no es válida.");
+  cli.fechaOp = fecha || cli.fechaOp || hoy;
+  const precio = leerMonto(str(f, "precio"));
+  if (precio != null) cli.precio = precio;
   cli.proximaFecha = proximaSugerida("vendido", hoy);
   cli.proximoPaso = "Llamar y pedir referidos";
   await saveCartera(user.id, c);
@@ -131,6 +135,27 @@ export async function borrarClienteAction(_: ActionResult | null, f: FormData): 
   c.seguimientos = c.seguimientos.filter((s) => s.cliente !== cid);
   await saveCartera(user.id, c);
   redirect("/clientes");
+}
+
+export async function guardarObjetivosAction(_: ActionResult | null, f: FormData): Promise<ActionResult> {
+  const user = await requireUser();
+  const n = (k: string) => Math.min(leerMonto(str(f, k)) ?? 0, 1e10);
+  const obj: Objetivos = { ventasAnio: n("ventasAnio"), volumenAnio: n("volumenAnio"), llamadasSemana: n("llamadasSemana"), captacionesMes: n("captacionesMes") };
+  const c = await loadCartera(user.id);
+  c.objetivos = obj;
+  await saveCartera(user.id, c);
+  revalidatePath("/estadisticas");
+  return ok("Objetivos guardados.");
+}
+
+export async function editarPerfilAction(_: ActionResult | null, f: FormData): Promise<ActionResult> {
+  const user = await requireUser();
+  const nombre = str(f, "nombre", 120);
+  const oficina = str(f, "oficina", 80);
+  if (!nombre || !oficina) return err("Completá tu nombre y tu oficina.");
+  await saveUser({ ...user, nombre, oficina });
+  revalidatePath("/", "layout");
+  return ok("Datos actualizados.");
 }
 
 export async function cambiarPasswordAction(_: ActionResult | null, f: FormData): Promise<ActionResult> {

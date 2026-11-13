@@ -1,4 +1,4 @@
-# Mesa de Brokers · CRM interno
+# Seguimiento MSZ · CRM interno
 
 CRM de la inmobiliaria: cada asesor carga sus clientes y anota sus llamadas, y la dirección ve la actividad de todos. Está armado igual que AlDia: Next.js, cuentas propias y datos en Netlify Blobs. No usa ningún servicio aparte.
 

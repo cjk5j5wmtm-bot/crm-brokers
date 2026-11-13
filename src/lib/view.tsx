@@ -5,7 +5,7 @@ import { estadoLlamada, fmtFecha, diasEntre, linkWhatsApp, TIPOS, type Cliente }
 // eslint-disable-next-line @next/next/no-img-element
 export const Logo = ({ size = 28 }: { size?: number }) => <img src="/marca/arbolito.png" width={size} height={size} alt="" aria-hidden="true" style={{ display: "block" }} />;
 
-export const Wordmark = () => <span className="wordmark">Mesa de Brokers</span>;
+export const Wordmark = () => <span className="wordmark">Seguimiento MSZ</span>;
 
 export const TipoChip = ({ c }: { c: Pick<Cliente, "tipo"> }) => (
   <span className={`chip ${c.tipo === "consulta" ? "info" : c.tipo === "vendido" ? "ok" : ""}`}>{TIPOS[c.tipo].nombre}</span>

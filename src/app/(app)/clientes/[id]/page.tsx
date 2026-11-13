@@ -65,8 +65,13 @@ export default async function Detalle({ params, searchParams }: { params: Promis
           </details>
           {x.tipo !== "vendido" && (
             <section className="section"><div className="body">
-              <ActionForm action={marcarComproAction} submit="Marcar que ya compró" variant="ghost" confirm={`¿${x.nombre} ya compró? Lo paso a "${TIPOS.vendido.plural}" y te aviso cada 2 meses para pedirle referidos.`}>
+              <h3>¿Compró? Registrá la venta</h3>
+              <ActionForm action={marcarComproAction} submit="Registrar venta" variant="ghost" className="stack" confirm={`Paso a ${x.nombre} a "${TIPOS.vendido.plural}" y te aviso cada 2 meses para pedirle referidos. La venta suma a tus estadísticas.`}>
                 <input type="hidden" name="id" value={x.id} />
+                <div className="row">
+                  <label className="field">Precio de venta (USD)<input name="precio" inputMode="numeric" defaultValue={x.precio ?? x.presupuesto ?? ""} /></label>
+                  <label className="field">Fecha<input name="fechaOp" type="date" defaultValue={hoy} max={hoy} /></label>
+                </div>
               </ActionForm>
             </div></section>
           )}

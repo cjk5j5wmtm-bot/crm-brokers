@@ -51,3 +51,34 @@ describe("formato", () => {
   });
   it("busca sin importar acentos", () => expect(buscar([cli({ zona: "Ramos Mejía" })], "mejia")).toHaveLength(1));
 });
+
+import { avance, estadisticas, lunes } from "@/lib/domain/crm";
+describe("estadísticas", () => {
+  const hoy = "2026-11-12"; // jueves
+  it("calcula el lunes de la semana", () => expect(lunes(hoy)).toBe("2026-11-09"));
+  it("cuenta ventas, volumen, captaciones y llamadas", () => {
+    const e = estadisticas({
+      clientes: [
+        cli({ id: "v1", tipo: "vendido", fechaOp: "2026-11-02", precio: 150000, origen: "Zonaprop" }),
+        cli({ id: "v2", tipo: "vendido", fechaOp: "2026-03-10", precio: 90000, origen: "Referido" }),
+        cli({ id: "v3", tipo: "vendido", fechaOp: "2025-12-10", precio: 80000 }),
+        cli({ id: "p1", tipo: "propietario", alta: "2026-11-05" }),
+        cli({ id: "c1", tipo: "consulta", alta: "2026-11-06", origen: "Zonaprop" }),
+      ],
+      seguimientos: [
+        { id: "a", cliente: "c1", fecha: "2026-11-10", canal: "Llamada", resultado: "Contestó", texto: "x", creado: "" },
+        { id: "b", cliente: "c1", fecha: "2026-11-03", canal: "Llamada", resultado: "No contestó", texto: "x", creado: "" },
+      ],
+    }, hoy);
+    expect([e.ventasAnio, e.volumenAnio, e.ventasMes, e.captacionesMes, e.consultasMes, e.llamadasSemana]).toEqual([2, 240000, 1, 1, 1, 1]);
+    expect(e.ventasPorMes[2]).toBe(1);
+    expect(e.origenes[0]).toEqual({ origen: "Zonaprop", clientes: 2, ventas: 1 });
+    expect(e.conversion).toBe(75);
+    expect([e.contestaron30, e.llamadas30]).toEqual([1, 2]);
+  });
+  it("avance con y sin meta", () => {
+    expect(avance(3, 12)).toBe(25);
+    expect(avance(20, 12)).toBe(100);
+    expect(avance(3, 0)).toBeNull();
+  });
+});

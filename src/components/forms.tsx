@@ -61,6 +61,7 @@ export function ClienteForm({ c, tipo }: { c?: Cliente; tipo: TipoCliente }) {
         <div className="row">
           <Txt name="direccion" label="Propiedad que compró" value={c?.direccion} />
           <Txt name="fechaOp" label="Fecha de compra" value={c?.fechaOp} type="date" />
+          <Txt name="precio" label="Precio de venta (USD)" value={c?.precio} inputMode="numeric" />
         </div>
       )}
       <div className="row">

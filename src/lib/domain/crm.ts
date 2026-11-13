@@ -51,10 +51,20 @@ export interface Seguimiento {
   creado: string;
 }
 
+/** Metas personales que fija cada asesor. 0 = sin meta. */
+export interface Objetivos {
+  ventasAnio: number; // operaciones cerradas en el año
+  volumenAnio: number; // USD vendidos en el año
+  llamadasSemana: number;
+  captacionesMes: number; // propietarios nuevos por mes
+}
+export const objetivosVacios = (): Objetivos => ({ ventasAnio: 0, volumenAnio: 0, llamadasSemana: 0, captacionesMes: 0 });
+
 /** Datos de un asesor. Cada asesor tiene los suyos guardados aparte. */
 export interface Cartera {
   clientes: Cliente[];
   seguimientos: Seguimiento[];
+  objetivos?: Objetivos;
 }
 export const carteraVacia = (): Cartera => ({ clientes: [], seguimientos: [] });
 
@@ -159,3 +169,74 @@ export function leerMonto(s: string): number | null {
   const n = Number(d);
   return Number.isFinite(n) ? n : null;
 }
+
+/* ---------- Estadísticas personales ---------- */
+
+export interface Estadisticas {
+  anio: string;
+  ventasAnio: number;
+  volumenAnio: number;
+  ventasMes: number;
+  captacionesMes: number;
+  consultasMes: number;
+  llamadasSemana: number;
+  contestaron30: number;
+  llamadas30: number;
+  /** Llamadas de las últimas 8 semanas, de la más vieja a la actual. */
+  semanas: { desde: string; llamadas: number }[];
+  /** Ventas por mes del año en curso (enero a diciembre). */
+  ventasPorMes: number[];
+  /** De qué canal llegan los clientes, de mayor a menor. */
+  origenes: { origen: string; clientes: number; ventas: number }[];
+  /** Porcentaje de consultas que terminaron en venta (consultas + ventas que cargaste). */
+  conversion: number | null;
+}
+
+/** Lunes de la semana de una fecha. */
+export function lunes(fecha: string) {
+  const d = new Date(`${fecha}T12:00:00Z`);
+  const dia = (d.getUTCDay() + 6) % 7;
+  return sumarDias(fecha, -dia);
+}
+
+export function estadisticas(c: Cartera, hoy: string): Estadisticas {
+  const anio = hoy.slice(0, 4);
+  const mes = hoy.slice(0, 7);
+  const ventas = c.clientes.filter((x) => x.tipo === "vendido" && esFecha(x.fechaOp));
+  const delAnio = ventas.filter((x) => x.fechaOp.startsWith(anio) && x.fechaOp <= hoy);
+  const inicioSemana = lunes(hoy);
+  const semanas = Array.from({ length: 8 }, (_, i) => {
+    const desde = sumarDias(inicioSemana, -7 * (7 - i));
+    const hasta = sumarDias(desde, 6);
+    return { desde, llamadas: c.seguimientos.filter((s) => s.fecha >= desde && s.fecha <= hasta).length };
+  });
+  const desde30 = sumarDias(hoy, -30);
+  const s30 = c.seguimientos.filter((s) => s.fecha >= desde30 && s.fecha <= hoy);
+  const porOrigen = new Map<string, { clientes: number; ventas: number }>();
+  for (const x of c.clientes) {
+    const o = x.origen || "Sin dato";
+    const v = porOrigen.get(o) ?? { clientes: 0, ventas: 0 };
+    v.clientes++;
+    if (x.tipo === "vendido") v.ventas++;
+    porOrigen.set(o, v);
+  }
+  const compradores = c.clientes.filter((x) => x.tipo === "consulta" || x.tipo === "vendido").length;
+  return {
+    anio,
+    ventasAnio: delAnio.length,
+    volumenAnio: delAnio.reduce((t, x) => t + (x.precio ?? 0), 0),
+    ventasMes: delAnio.filter((x) => x.fechaOp.startsWith(mes)).length,
+    captacionesMes: c.clientes.filter((x) => x.tipo === "propietario" && x.alta.startsWith(mes)).length,
+    consultasMes: c.clientes.filter((x) => x.tipo === "consulta" && x.alta.startsWith(mes)).length,
+    llamadasSemana: semanas[7].llamadas,
+    contestaron30: s30.filter((s) => s.resultado === "Contestó").length,
+    llamadas30: s30.length,
+    semanas,
+    ventasPorMes: Array.from({ length: 12 }, (_, i) => delAnio.filter((x) => Number(x.fechaOp.slice(5, 7)) === i + 1).length),
+    origenes: [...porOrigen].map(([origen, v]) => ({ origen, ...v })).sort((a, b) => b.clientes - a.clientes),
+    conversion: compradores ? Math.round((ventas.length / compradores) * 100) : null,
+  };
+}
+
+/** Avance hacia una meta, de 0 a 100. Null si no hay meta. */
+export const avance = (valor: number, meta: number) => (meta > 0 ? Math.min(100, Math.round((valor / meta) * 100)) : null);

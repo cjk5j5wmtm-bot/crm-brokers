@@ -389,3 +389,30 @@ td a:hover { text-decoration: underline; }
 
 /* Verde tecnológico: chip de consulta en turquesa para distinguirlo del acento */
 .chip.info { background: rgba(45, 212, 191, 0.14); color: #5EEAD4; }
+
+/* Estadísticas */
+.kpi.goal .bar { height: 6px; border-radius: 6px; background: var(--surface-2); overflow: hidden; margin-top: 6px; box-shadow: inset 0 0 0 1px var(--line); }
+.kpi.goal .bar i { display: block; height: 100%; background: var(--accent-grad); border-radius: 6px; }
+.chart { position: relative; display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 18px; }
+.chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 4px; min-width: 0; }
+.chart .col i { display: block; width: 100%; max-width: 36px; min-height: 2px; border-radius: 6px 6px 2px 2px; background: rgba(31, 201, 133, 0.35); }
+.chart .col.now i { background: var(--accent-grad); }
+.chart .col.future i { background: var(--surface-2); }
+.chart .v { font-size: 12px; color: var(--muted); }
+.chart .l { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.chart .col.now .l { color: var(--ink); font-weight: 600; }
+.chart .goal-line { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--warn); margin-bottom: 22px; pointer-events: none; }
+.chart .goal-line span { position: absolute; right: 0; top: -18px; font-size: 11px; color: var(--warn); }
+.chart.months { gap: 4px; }
+
+/* Cuenta arriba a la derecha */
+.account { display: flex; align-items: center; gap: 10px; }
+.account-name { display: grid; text-align: right; line-height: 1.25; }
+.account-name b { font-size: 14px; font-weight: 600; }
+.account-name span { font-size: 12px; color: var(--muted); }
+.profile-id .role { display: inline-flex; width: fit-content; margin-top: 4px; }
+.topbar { margin: -16px 0 12px; }
+@media (max-width: 900px) { .account-name { display: none; } }
+@media (max-width: 640px) { .chart { gap: 4px; height: 150px; } .chart.months .l { font-size: 9px; } }
+.tabbar.n5 { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 900px) { .kpi.goal .bar { grid-column: 1 / -1; } .kpi.goal > small { display: block; grid-column: 1 / -1; } }

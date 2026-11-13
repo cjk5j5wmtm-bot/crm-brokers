@@ -7,6 +7,7 @@ const ICONS: Record<string, React.ReactNode> = {
   "/": <><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" /></>,
   "/clientes": <><circle cx="9" cy="8" r="4" /><path d="M2 21c1.2-3.6 3.8-5.5 7-5.5s5.8 1.9 7 5.5M16 4a4 4 0 0 1 0 8M18 15.5c2 .6 3.3 2.4 4 5.5" /></>,
   "/clientes/nuevo": <><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></>,
+  "/estadisticas": <><path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /></>,
   "/direccion": <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></>,
 };
 
@@ -17,6 +18,7 @@ export function Nav({ variant = "side", direccion }: { variant?: "side" | "tabba
     { href: "/", label: "Llamadas de hoy", short: "Hoy" },
     { href: "/clientes", label: "Mis clientes", short: "Clientes" },
     { href: "/clientes/nuevo", label: "Nuevo cliente", short: "Nuevo" },
+    { href: "/estadisticas", label: "Mis estadísticas", short: "Stats" },
     ...(direccion ? [{ href: "/direccion", label: "Dirección", short: "Dirección" }] : []),
   ];
   return (
