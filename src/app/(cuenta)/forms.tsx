@@ -20,7 +20,7 @@ export function LoginForm() {
   );
 }
 
-export function RegisterForm({ oficinas }: { oficinas: string[] }) {
+export function RegisterForm({ oficinas, conCodigo }: { oficinas: string[]; conCodigo: boolean }) {
   const [s, action, pending] = useActionState(registerAction, null);
   return (
     <form action={action} className="auth-form">
@@ -32,7 +32,7 @@ export function RegisterForm({ oficinas }: { oficinas: string[] }) {
       </label>
       <label className="field">Mail<input name="email" type="email" autoComplete="email" required defaultValue={s?.email} /></label>
       <label className="field">Contraseña (mínimo 8 caracteres)<input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
-      <label className="field">Código de registro<input name="codigo" required autoComplete="off" autoCapitalize="characters" /></label>
+      {conCodigo && <label className="field">Código de registro<input name="codigo" required autoComplete="off" autoCapitalize="characters" /></label>}
       <Err s={s} />
       <button className="btn big" disabled={pending}>{pending ? "Creando…" : "Crear mi cuenta"}</button>
       <p className="small muted">¿Ya tenés cuenta? <Link href="/ingresar">Ingresá</Link></p>

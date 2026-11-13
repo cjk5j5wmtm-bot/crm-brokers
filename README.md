@@ -14,7 +14,8 @@ CRM de la inmobiliaria: cada asesor carga sus clientes y anota sus llamadas, y l
 ## Seguridad
 - Cada asesor ve **solo sus clientes**. Sus datos se guardan aparte, y el servidor nunca muestra los de otro.
 - La dirección puede ver todo, pero no edita los clientes de los asesores.
-- Para registrarse hace falta el **código de registro**. Sin código no se crea la cuenta.
+- Registro abierto: cualquiera puede crear su cuenta, pero solo ve sus propios clientes. Si querés cerrarlo, cargá `REGISTRO_CODIGO` en Netlify y desde ese momento se pide el código.
+- **La primera cuenta que se crea queda como dirección.** Después, la dirección le da ese rol a quien quiera.
 - Las contraseñas se guardan con `scrypt` y sal. La sesión es una cookie firmada que dura 30 días.
 - Si un asesor se da de baja, deja de poder entrar en el momento, y su historial queda guardado.
 - El historial de llamadas no se edita: queda como registro para la dirección.
@@ -22,7 +23,7 @@ CRM de la inmobiliaria: cada asesor carga sus clientes y anota sus llamadas, y l
 ## Configuración en Netlify (Project configuration > Environment variables)
 | Variable | Para qué | Ejemplo |
 |---|---|---|
-| `REGISTRO_CODIGO` | Código que la dirección les pasa a los asesores. **Obligatorio.** | `OESTE-7K2P-M9QX` |
+| `REGISTRO_CODIGO` | Opcional. Si lo cargás, el registro pide este código. | `OESTE-7K2P-M9QX` |
 | `DIRECCION_EMAILS` | Mails con rol de dirección, separados por coma. | `gerencia@inmobiliaria.com` |
 | `OFICINAS` | Oficinas para elegir al registrarse, separadas por coma. | `Castelar,Ramos Mejía,Leloir,CABA,Ituzaingó` |
 | `SESSION_SECRET` | Opcional. Si no se pone, se genera solo. | |

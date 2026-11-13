@@ -41,13 +41,17 @@ const safeEqual = (a: string, b: string) => {
   return timingSafeEqual(x, y);
 };
 
-/** El código de registro se configura en Netlify (variable REGISTRO_CODIGO). Sin código, nadie puede registrarse. */
-export function registroAbierto() {
+/**
+ * Código de registro opcional (variable REGISTRO_CODIGO en Netlify).
+ * Sin código, cualquiera puede crear su cuenta. Con código, solo quien lo tenga.
+ */
+export function pideCodigo() {
   return !!process.env.REGISTRO_CODIGO?.trim();
 }
 export function codigoValido(codigo: string) {
   const ok = process.env.REGISTRO_CODIGO?.trim();
-  return !!ok && safeEqual(codigo.trim().toUpperCase(), ok.toUpperCase());
+  if (!ok) return true;
+  return safeEqual(codigo.trim().toUpperCase(), ok.toUpperCase());
 }
 
 /** Mails de la dirección (variable DIRECCION_EMAILS, separados por coma). Siempre tienen rol dirección. */
@@ -86,7 +90,9 @@ export async function saveUser(u: User) {
 
 export async function createUser(u: Omit<User, "salt" | "hash" | "rol" | "activo">, password: string) {
   if (await findUser(u.email)) throw new Error("Ya hay una cuenta con ese mail. Ingresá con tu contraseña.");
-  const user: User = { ...u, email: normalizeEmail(u.email), rol: "asesor", activo: true, ...hashPassword(password) };
+  // La primera cuenta del CRM queda con rol de dirección, para que alguien pueda administrar desde el principio.
+  const primera = (await kvList("equipo/")).length === 0;
+  const user: User = { ...u, email: normalizeEmail(u.email), rol: primera ? "direccion" : "asesor", activo: true, ...hashPassword(password) };
   await saveUser(user);
   return conRol(user);
 }

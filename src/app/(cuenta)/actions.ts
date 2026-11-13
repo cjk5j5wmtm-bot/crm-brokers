@@ -2,7 +2,7 @@
 
 import { randomBytes } from "node:crypto";
 import { redirect } from "next/navigation";
-import { checkPassword, codigoValido, createUser, endSession, findUser, registroAbierto, startSession } from "@/lib/server/auth";
+import { checkPassword, codigoValido, createUser, endSession, findUser, startSession } from "@/lib/server/auth";
 
 export interface FormState {
   error?: string;
@@ -16,7 +16,6 @@ export async function registerAction(_: FormState | null, f: FormData): Promise<
   const oficina = str(f, "oficina");
   const email = str(f, "email");
   const password = String(f.get("password") ?? "");
-  if (!registroAbierto()) return { error: "La dirección todavía no habilitó el registro.", email };
   if (!codigoValido(str(f, "codigo"))) return { error: "El código de registro no es correcto. Pedíselo a la dirección.", email };
   if (!nombre) return { error: "Escribí tu nombre y apellido.", email };
   if (!oficina) return { error: "Elegí tu oficina.", email };
