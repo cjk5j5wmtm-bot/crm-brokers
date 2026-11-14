@@ -18,7 +18,7 @@ export default async function Cuenta() {
               <dt>Nombre</dt><dd>{u.nombre}</dd>
               <dt>Mail</dt><dd>{u.email}</dd>
               <dt>Oficina</dt><dd>{u.oficina}</dd>
-              <dt>Rol</dt><dd>{u.rol === "direccion" ? "Dirección (ve la actividad de todos)" : "Asesor"}</dd>
+              <dt>Rol</dt><dd>{u.dueno ? "Dueño (ve todo en la pestaña General)" : "Asesor"}</dd>
               <dt>Cuenta creada</dt><dd>{fmtFecha(u.createdAt.slice(0, 10))}</dd>
             </dl>
             <details>
@@ -36,7 +36,7 @@ export default async function Cuenta() {
           <header><h2>Cambiar mi contraseña</h2></header>
           <div className="body">
             <ActionForm action={cambiarPasswordAction} submit="Cambiar contraseña" className="stack" reset>
-              <label className="field">Contraseña actual (o la temporal que te dio la dirección)<input name="actual" type="password" autoComplete="current-password" required /></label>
+              <label className="field">Contraseña actual (o la temporal que te dio el dueño)<input name="actual" type="password" autoComplete="current-password" required /></label>
               <label className="field">Contraseña nueva (mínimo 8 caracteres)<input name="nueva" type="password" autoComplete="new-password" minLength={8} required /></label>
             </ActionForm>
           </div>

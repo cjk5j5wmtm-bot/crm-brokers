@@ -8,7 +8,7 @@ import {
   type Cliente, type Objetivos, type Seguimiento,
 } from "@/lib/domain/crm";
 import { checkPassword, findUserById, hashPassword, saveUser } from "@/lib/server/auth";
-import { loadCartera, requireDireccion, requireUser, saveCartera } from "@/lib/server/store";
+import { loadCartera, requireDueno, requireUser, saveCartera } from "@/lib/server/store";
 
 export interface ActionResult {
   ok: boolean;
@@ -170,10 +170,10 @@ export async function cambiarPasswordAction(_: ActionResult | null, f: FormData)
   return ok("Contraseña cambiada.");
 }
 
-/* ---------- Dirección ---------- */
+/* ---------- Dueño ---------- */
 
 async function asesorDe(f: FormData) {
-  const yo = await requireDireccion();
+  const yo = await requireDueno();
   const u = await findUserById(str(f, "asesor"));
   return { yo, u };
 }
@@ -183,18 +183,8 @@ export async function cambiarActivoAction(_: ActionResult | null, f: FormData): 
   if (!u) return err("No encontré a ese asesor.");
   if (u.id === yo.id) return err("No podés darte de baja a vos mismo.");
   await saveUser({ ...u, activo: !u.activo });
-  revalidatePath("/direccion");
+  revalidatePath("/general");
   return ok(u.activo ? `${u.nombre} quedó dado de baja. Su historial sigue guardado.` : `${u.nombre} puede volver a entrar.`);
-}
-
-export async function cambiarRolAction(_: ActionResult | null, f: FormData): Promise<ActionResult> {
-  const { yo, u } = await asesorDe(f);
-  if (!u) return err("No encontré a ese asesor.");
-  if (u.id === yo.id) return err("No podés cambiar tu propio rol.");
-  const rol = u.rol === "direccion" ? "asesor" : "direccion";
-  await saveUser({ ...u, rol });
-  revalidatePath("/direccion");
-  return ok(rol === "direccion" ? `${u.nombre} ahora ve la actividad de todos.` : `${u.nombre} volvió a ser asesor.`);
 }
 
 /** Genera una contraseña temporal para un asesor que se la olvidó. Se muestra una sola vez. */

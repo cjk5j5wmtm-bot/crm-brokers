@@ -9,7 +9,7 @@ export default async function Registro() {
   return (
     <>
       <h1>Creá tu cuenta</h1>
-      <p className="muted">{pideCodigo() ? "Pedile el código de registro a la dirección. " : ""}Solo vas a ver tus propios clientes.</p>
+      <p className="muted">{pideCodigo() ? "Pedile el código de registro al dueño. " : ""}Solo vas a ver tus propios clientes.</p>
       <RegisterForm oficinas={oficinas()} conCodigo={pideCodigo()} />
     </>
   );

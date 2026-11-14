@@ -2,11 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { estadoLlamada, fmtFecha, hoyAR, sumarDias } from "@/lib/domain/crm";
 import { findUserById } from "@/lib/server/auth";
-import { loadCartera, requireDireccion } from "@/lib/server/store";
+import { loadCartera, requireDueno } from "@/lib/server/store";
 import { LlamadaChip, TipoChip } from "@/lib/view";
 
 export default async function AsesorDetalle({ params }: { params: Promise<{ id: string }> }) {
-  await requireDireccion();
+  await requireDueno();
   const { id } = await params;
   const u = await findUserById(id);
   if (!u) notFound();
@@ -18,7 +18,7 @@ export default async function AsesorDetalle({ params }: { params: Promise<{ id: 
   const segs = c.seguimientos.filter((s) => s.fecha >= sumarDias(hoy, -30)).sort((a, b) => b.fecha.localeCompare(a.fecha) || b.creado.localeCompare(a.creado));
   return (
     <>
-      <p className="small"><Link href="/direccion">← Dirección</Link></p>
+      <p className="small"><Link href="/general?vista=equipo">← General</Link></p>
       <div className="head"><div><h1>{u.nombre}</h1><p>{u.oficina} · {u.email}{!u.activo ? " · Dado de baja" : ""}</p></div></div>
       <div className="grid2">
         <section className="section">

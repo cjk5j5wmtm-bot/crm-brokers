@@ -430,3 +430,9 @@ td a:hover { text-decoration: underline; }
 .tipo-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .chip.inq { background: rgba(196, 181, 253, 0.14); color: #C4B5FD; }
 @media (max-width: 640px) { .tipo-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* General (Dueño) */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 20px; }
+.filters .field { flex: 0 1 200px; }
+.tabs { overflow-x: auto; }
+.tabs a { white-space: nowrap; }

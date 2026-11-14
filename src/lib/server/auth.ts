@@ -10,6 +10,7 @@ export interface User {
   email: string;
   nombre: string;
   oficina: string;
+  /** Campo viejo: el rol Dirección ya no se usa. El único que ve todo es el Dueño. */
   rol: Rol;
   activo: boolean;
   salt: string;
@@ -54,9 +55,6 @@ export function codigoValido(codigo: string) {
   return safeEqual(codigo.trim().toUpperCase(), ok.toUpperCase());
 }
 
-/** Mails de la dirección (variable DIRECCION_EMAILS, separados por coma). Siempre tienen rol dirección. */
-const emailsDireccion = () => (process.env.DIRECCION_EMAILS ?? "").split(",").map(normalizeEmail).filter(Boolean);
-const conRol = (u: User): User => (emailsDireccion().includes(u.email) ? { ...u, rol: "direccion" } : u);
 
 async function secret(): Promise<string> {
   if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
@@ -68,8 +66,7 @@ async function secret(): Promise<string> {
 }
 
 export async function findUser(email: string) {
-  const u = await kvGet<User>(emailKey(email));
-  return u ? conRol(u) : null;
+  return kvGet<User>(emailKey(email));
 }
 
 export async function findUserById(id: string) {
@@ -90,11 +87,12 @@ export async function saveUser(u: User) {
 
 export async function createUser(u: Omit<User, "salt" | "hash" | "rol" | "activo">, password: string) {
   if (await findUser(u.email)) throw new Error("Ya hay una cuenta con ese mail. Ingresá con tu contraseña.");
-  // La primera cuenta del CRM queda con rol de dirección, para que alguien pueda administrar desde el principio.
   const primera = (await kvList("equipo/")).length === 0;
-  const user: User = { ...u, email: normalizeEmail(u.email), rol: primera ? "direccion" : "asesor", activo: true, ...hashPassword(password) };
+  const user: User = { ...u, email: normalizeEmail(u.email), rol: "asesor", activo: true, ...hashPassword(password) };
   await saveUser(user);
-  return conRol(user);
+  // La primera cuenta del CRM queda como Dueño.
+  if (primera && !process.env.DUENO_EMAIL) await kvSet(DUENO_KEY, { id: user.id });
+  return user;
 }
 
 const sign = async (payload: string) => createHmac("sha256", await secret()).update(payload).digest("base64url");
@@ -125,4 +123,28 @@ export async function currentUser(): Promise<User | null> {
   } catch {
     return null;
   }
+}
+
+/* ---------- Dueño: una sola cuenta que ve todo ---------- */
+
+const DUENO_KEY = "config/dueno";
+
+/**
+ * Id de la cuenta Dueño. Hay una sola.
+ * - Si está la variable DUENO_EMAIL en Netlify, es esa cuenta.
+ * - Si no, la que quedó guardada (la primera cuenta creada).
+ * - Para cuentas viejas sin dato guardado: la primera cuenta que tenía rol Dirección o, si no hay, la más antigua.
+ * No se puede cambiar desde la web.
+ */
+export async function duenoId(): Promise<string | null> {
+  const env = process.env.DUENO_EMAIL?.trim();
+  if (env) return (await findUser(env))?.id ?? null;
+  const saved = await kvGet<{ id: string }>(DUENO_KEY);
+  if (saved) return saved.id;
+  const todos = await listUsers();
+  if (!todos.length) return null;
+  const porFecha = (a: User, b: User) => a.createdAt.localeCompare(b.createdAt);
+  const elegido = [...todos.filter((u) => u.rol === "direccion")].sort(porFecha)[0] ?? [...todos].sort(porFecha)[0];
+  await kvSet(DUENO_KEY, { id: elegido.id });
+  return elegido.id;
 }

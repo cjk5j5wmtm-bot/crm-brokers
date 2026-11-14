@@ -16,7 +16,7 @@ export async function registerAction(_: FormState | null, f: FormData): Promise<
   const oficina = str(f, "oficina");
   const email = str(f, "email");
   const password = String(f.get("password") ?? "");
-  if (!codigoValido(str(f, "codigo"))) return { error: "El código de registro no es correcto. Pedíselo a la dirección.", email };
+  if (!codigoValido(str(f, "codigo"))) return { error: "El código de registro no es correcto. Pedíselo al dueño.", email };
   if (!nombre) return { error: "Escribí tu nombre y apellido.", email };
   if (!oficina) return { error: "Elegí tu oficina.", email };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "Ese mail no parece válido.", email };
@@ -35,7 +35,7 @@ export async function loginAction(_: FormState | null, f: FormData): Promise<For
   const user = await findUser(email);
   // Mismo mensaje si el mail no existe o la contraseña es incorrecta: no revela qué cuentas existen.
   if (!user || !checkPassword(String(f.get("password") ?? ""), user)) return { error: "El mail o la contraseña no coinciden.", email };
-  if (!user.activo) return { error: "Tu cuenta está dada de baja. Hablá con la dirección.", email };
+  if (!user.activo) return { error: "Tu cuenta está dada de baja. Hablá con el dueño.", email };
   await startSession(user);
   redirect("/");
 }

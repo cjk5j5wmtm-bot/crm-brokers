@@ -33,7 +33,7 @@ export default async function Estadisticas() {
   const mesActual = Number(hoy.slice(5, 7)) - 1;
   return (
     <>
-      <div className="head"><div><h1>Mis estadísticas</h1><p>Tus ventas y tu actividad de {e.anio}. Solo las ves vos y la dirección.</p></div></div>
+      <div className="head"><div><h1>Mis estadísticas</h1><p>Tus ventas y tu actividad de {e.anio}. Solo las ves vos y el dueño.</p></div></div>
 
       <div className="kpis four">
         <Meta titulo={`Ventas ${e.anio}`} valor={e.ventasAnio} meta={o.ventasAnio} pie="del año" />

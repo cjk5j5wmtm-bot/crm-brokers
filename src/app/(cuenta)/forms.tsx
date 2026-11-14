@@ -15,7 +15,7 @@ export function LoginForm() {
       <Err s={s} />
       <button className="btn big" disabled={pending}>{pending ? "Ingresando…" : "Ingresar"}</button>
       <p className="small muted">¿Sos asesor y no tenés cuenta? <Link href="/registro">Creala acá</Link></p>
-      <p className="small muted">¿Te olvidaste la contraseña? Pedile a la dirección una contraseña temporal.</p>
+      <p className="small muted">¿Te olvidaste la contraseña? Pedile al dueño una contraseña temporal.</p>
     </form>
   );
 }

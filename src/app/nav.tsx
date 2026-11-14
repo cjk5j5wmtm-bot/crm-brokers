@@ -8,18 +8,18 @@ const ICONS: Record<string, React.ReactNode> = {
   "/clientes": <><circle cx="9" cy="8" r="4" /><path d="M2 21c1.2-3.6 3.8-5.5 7-5.5s5.8 1.9 7 5.5M16 4a4 4 0 0 1 0 8M18 15.5c2 .6 3.3 2.4 4 5.5" /></>,
   "/clientes/nuevo": <><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></>,
   "/estadisticas": <><path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /></>,
-  "/direccion": <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></>,
+  "/general": <><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></>,
 };
 
 /** Menú: lateral en computadora y barra inferior en celular (variant="tabbar"). */
-export function Nav({ variant = "side", direccion }: { variant?: "side" | "tabbar"; direccion: boolean }) {
+export function Nav({ variant = "side", dueno }: { variant?: "side" | "tabbar"; dueno: boolean }) {
   const path = usePathname();
   const items = [
     { href: "/", label: "Llamadas de hoy", short: "Hoy" },
     { href: "/clientes", label: "Mis clientes", short: "Clientes" },
     { href: "/clientes/nuevo", label: "Nuevo cliente", short: "Nuevo" },
     { href: "/estadisticas", label: "Mis estadísticas", short: "Stats" },
-    ...(direccion ? [{ href: "/direccion", label: "Dirección", short: "Dirección" }] : []),
+    ...(dueno ? [{ href: "/general", label: "General", short: "General" }] : []),
   ];
   return (
     <nav className={variant === "tabbar" ? `tabbar n${items.length}` : "nav"} aria-label="Secciones">
